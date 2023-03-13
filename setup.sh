@@ -158,6 +158,7 @@ fi
 
 #clone forked version of TFLITE
 git clone https://github.com/andreimestereaga/tflite-micro.git
+git clone https://github.com/andreimestereaga/microphone-library-for-pico.git
 
 # Enable UART
 if [[ "$SKIP_UART" == 1 ]]; then
