@@ -50,20 +50,19 @@ include_directories(
 
 #create example MAIN executable
 add_executable(hello_world ${HELLO_WORLD_SRCS} ${TARGET_GENERATED_SRCS})
-target_link_libraries(hello_world ${TFLITE_MICROLIB_PATH} pico_stdlib pico_cyw43_arch_none)
+target_link_libraries(hello_world 
+    ${TFLITE_MICROLIB_PATH} 
+    pico_stdlib 
+    pico_cyw43_arch_none
+    )
 add_dependencies(hello_world tflitelib)
 
 pico_enable_stdio_usb(hello_world 1)
 pico_enable_stdio_uart(hello_world 0)
 pico_add_extra_outputs(hello_world)
 
-set_target_properties(
-  hello_world
-  PROPERTIES
-  COMPILE_FLAGS -fno-rtti
-  COMPILE_FLAGS -fno-exceptions
-  COMPILE_FLAGS -fno-threadsafe-statics
-)
+set(CXX_ADDITIONAL_FLAGS   -Werror -fno-unwind-tables -ffunction-sections -fdata-sections -fmessage-length=0 -DTF_LITE_STATIC_MEMORY -DTF_LITE_DISABLE_X86_NEON)
+target_compile_options(hello_world PRIVATE ${CXX_ADDITIONAL_FLAGS})
 
 set_property(
         TARGET hello_world

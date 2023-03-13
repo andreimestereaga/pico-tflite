@@ -47,7 +47,6 @@ int8_t* model_input_buffer = nullptr;
 
 // The name of this function is important for Arduino compatibility.
 void setup() {
-  MicroPrintf("Testing here");
   tflite::InitializeTarget();
 
   // Map the model into a usable data structure. This doesn't involve any
@@ -60,7 +59,6 @@ void setup() {
         model->version(), TFLITE_SCHEMA_VERSION);
     return;
   }
-  MicroPrintf("Testing here 1");
   // Pull in only the operation implementations we need.
   // This relies on a complete list of all the ops needed by this graph.
   // An easier approach is to just use the AllOpsResolver, but this will
@@ -82,7 +80,6 @@ void setup() {
   if (micro_op_resolver.AddReshape() != kTfLiteOk) {
     return;
   }
-  MicroPrintf("Testing here 2");
   // Build an interpreter to run the model with.
   static tflite::MicroInterpreter static_interpreter(
       model, micro_op_resolver, tensor_arena, kTensorArenaSize);
@@ -94,10 +91,8 @@ void setup() {
     MicroPrintf("AllocateTensors() failed");
     return;
   }
-  MicroPrintf("Testing here 3");
   // Get information about the memory area to use for the model's input.
   model_input = interpreter->input(0);
-   MicroPrintf("Testing here 33");
   if ((model_input->dims->size != 2) || (model_input->dims->data[0] != 1) ||
       (model_input->dims->data[1] !=
        (kFeatureSliceCount * kFeatureSliceSize)) ||
@@ -106,7 +101,6 @@ void setup() {
     return;
   }
   model_input_buffer = model_input->data.int8;
-  MicroPrintf("Testing here 4");
   // Prepare to access the audio spectrograms from a microphone or other source
   // that will provide the inputs to the neural network.
   // NOLINTNEXTLINE(runtime-global-variables)
@@ -118,7 +112,6 @@ void setup() {
   recognizer = &static_recognizer;
 
   previous_time = 0;
-  MicroPrintf("Testing here 5");
 }
 
 // The name of this function is important for Arduino compatibility.
