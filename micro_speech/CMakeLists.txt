@@ -27,6 +27,8 @@ get_filename_component(TENSORFLOW_ROOT
 
 #set all used PATHs
 set(TFLITE_MICROLIB_PATH "${TENSORFLOW_ROOT}/gen/${TARGET}_${TARGET_ARCH}_${BUILD_TYPE}/lib/libtensorflow-microlite.a")
+
+
 set(TARGET_GENERATOR_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/micro_speech.tflite
                             ${CMAKE_CURRENT_SOURCE_DIR}/testdata/no_1000ms.wav
                             ${CMAKE_CURRENT_SOURCE_DIR}/testdata/no_30ms.wav
@@ -47,6 +49,24 @@ set(TARGET_GENERATED_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/micro_speech_model_data.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/testdata/yes_30ms_audio_data.h
 )
 
+set(TARGET_MIC_GENERATOR_INPUTS ${CMAKE_CURRENT_SOURCE_DIR}/micro_speech.tflite)
+set(TARGET_MIC_GENERATOR_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/micro_speech_model_data.cc)
+set(TARGET_MIC_GENERATOR_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/micro_speech_model_data.h)
+
+set(MICRO_SPEECH_PDM_MIC_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/main_functions.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/microphone/pdm_audio_provider.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/feature_provider.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/no_micro_features_data.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/yes_micro_features_data.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/recognize_commands.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/microphone/command_responder.cc
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_features_generator.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_model_settings.cc
+
+)
 
 
 set(MICRO_SPEECH_MOCK_SRCS
@@ -61,6 +81,7 @@ set(MICRO_SPEECH_MOCK_SRCS
 
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_features_generator.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_model_settings.cc
+
     )
 
 set(TARGET_LIB_MICROFRONTEND_SRCS
@@ -87,6 +108,7 @@ set(TARGET_LIB_KISSFFT_SRCS
     )
 
 include_directories(
+    "${CMAKE_CURRENT_SOURCE_DIR}"
     "${TENSORFLOW_ROOT}"
     "${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/make/downloads/flatbuffers/include"
     #KissFFT INCLUDES
@@ -104,14 +126,36 @@ add_library(microfrontend_lib STATIC ${TARGET_LIB_MICROFRONTEND_SRCS})
 target_compile_options(microfrontend_lib PRIVATE ${ARCH_FLAGS})
 add_dependencies(microfrontend_lib kiss_fft_lib)
 
-#create example MAIN executable
+
+
+######################################
+#create miro-speech digital mic target
+add_executable(micro-speech-pdm-mic ${MICRO_SPEECH_PDM_MIC_SRCS} ${TARGET_MIC_GENERATOR_SRCS})
+
+target_link_libraries(micro-speech-pdm-mic
+    kiss_fft_lib 
+    microfrontend_lib 
+    pico_stdlib 
+    pico_cyw43_arch_none
+    pico_pdm_microphone
+    ${TFLITE_MICROLIB_PATH}
+    )
+add_dependencies(micro-speech-pdm-mic tflitelib)
+
+set(CXX_ADDITIONAL_FLAGS   -Werror -fno-unwind-tables -ffunction-sections -fdata-sections -fmessage-length=0 -DTF_LITE_STATIC_MEMORY -DTF_LITE_DISABLE_X86_NEON)
+target_compile_options(micro-speech-pdm-mic PRIVATE ${CXX_ADDITIONAL_FLAGS})
+
+pico_enable_stdio_usb(micro-speech-pdm-mic 1)
+pico_enable_stdio_uart(micro-speech-pdm-mic 0)
+pico_add_extra_outputs(micro-speech-pdm-mic)
+
+############################################
+#create example micro-speech mock executable
 add_executable(micro-speech-mock ${MICRO_SPEECH_MOCK_SRCS} ${TARGET_GENERATED_SRCS})
 target_link_libraries(micro-speech-mock 
     kiss_fft_lib 
     microfrontend_lib 
     pico_stdlib 
-    pico_cyw43_arch_none
-    pico_analog_microphone
     ${TFLITE_MICROLIB_PATH}
     )
 add_dependencies(micro-speech-mock tflitelib)
@@ -123,12 +167,16 @@ pico_enable_stdio_usb(micro-speech-mock 1)
 pico_enable_stdio_uart(micro-speech-mock 0)
 pico_add_extra_outputs(micro-speech-mock)
 
+############################################################################################################################################
+
+
 add_custom_command(
     OUTPUT  ${TARGET_GENERATED_SRCS} ${TARGET_GENERATED_HDRS}
     COMMAND python3 ${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/generate_cc_arrays.py ${CMAKE_CURRENT_SOURCE_DIR} ${TARGET_GENERATOR_INPUTS}
     DEPENDS ${MICRO_SPEECH_MOCK_SRCS}
     COMMENT "Generating network input as array..."
 )
+
 
 add_custom_target(
     tflitelib
