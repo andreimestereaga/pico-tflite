@@ -180,7 +180,7 @@ add_custom_command(
 
 add_custom_target(
     tflitelib
-    COMMAND make VERBOSE=1 -f ${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/make/Makefile TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH} BUILD_TYPE=${BUILD_TYPE} -j${JOBS}
+    COMMAND make VERBOSE=1 -f ${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/make/Makefile OPTIMIZED_KERNEL_DIR=cmsis_nn TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH} BUILD_TYPE=${BUILD_TYPE} -j${JOBS}
     COMMENT "Compiling tensorflowlite micro library..."
     WORKING_DIRECTORY  ${TENSORFLOW_ROOT}
 )
