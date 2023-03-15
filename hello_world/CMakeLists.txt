@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 include(ProcessorCount)
-include(/home/ame/pico/pico-tflite/pico/pico-sdk/pico_sdk_init.cmake)
+get_filename_component(SDK_INCLUDE
+                       "${CMAKE_CURRENT_SOURCE_DIR}/../pico/pico-sdk/pico_sdk_init.cmake"
+                       ABSOLUTE)
+
+include(${SDK_INCLUDE})
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR riscv)
