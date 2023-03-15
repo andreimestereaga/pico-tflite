@@ -19,7 +19,7 @@ OUTDIR="$(pwd)/pico"
 
 # Install dependencies
 GIT_DEPS="git"
-SDK_DEPS="cmake gcc-arm-none-eabi gcc g++"
+SDK_DEPS="cmake gcc-arm-none-eabi gcc g++ python3-pip"
 OPENOCD_DEPS="gdb-multiarch automake autoconf build-essential texinfo libtool libftdi-dev libusb-1.0-0-dev pkg-config"
 VSCODE_DEPS="code"
 UART_DEPS="minicom"
@@ -157,8 +157,13 @@ else
 fi
 
 #clone forked version of TFLITE
+pip3 install Pillow
 git clone https://github.com/andreimestereaga/tflite-micro.git
 git clone https://github.com/andreimestereaga/microphone-library-for-pico.git
+
+cd tflite-micro
+ make  -f tensorflow/lite/micro/tools/make/Makefile OPTIMIZED_KERNEL_DIR=cmsis_nn TARGET=cortex_m_generic TARGET_ARCH=cortex-m0plus BUILD_TYPE=default -j4 microlite
+cd $OUTDIR
 
 # Enable UART
 if [[ "$SKIP_UART" == 1 ]]; then
