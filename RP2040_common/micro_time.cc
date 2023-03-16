@@ -28,9 +28,9 @@ namespace {
 const int32_t kClocksPerSecond = 1000000;
 }  // namespace
 
-int32_t ticks_per_second() { return kClocksPerSecond; }
+uint32_t ticks_per_second() { return kClocksPerSecond; }
 
-int32_t GetCurrentTimeTicks() {
+uint32_t GetCurrentTimeTicks() {
   return static_cast<int32_t>(time_us_32());
 }
 

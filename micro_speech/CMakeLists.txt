@@ -71,6 +71,9 @@ set(MICRO_SPEECH_PDM_MIC_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_features_generator.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_model_settings.cc
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../RP2040_common/debug_log.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../RP2040_common/micro_time.cc
+
 )
 
 
@@ -86,6 +89,9 @@ set(MICRO_SPEECH_MOCK_SRCS
 
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_features_generator.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/micro_features/micro_model_settings.cc
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../RP2040_common/debug_log.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../RP2040_common/micro_time.cc
 
     )
 
