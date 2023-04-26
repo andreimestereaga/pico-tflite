@@ -57,6 +57,7 @@ add_executable(hello_world ${HELLO_WORLD_SRCS} ${TARGET_GENERATED_SRCS})
 target_link_libraries(hello_world 
     ${TFLITE_MICROLIB_PATH} 
     pico_stdlib 
+    hardware_pwm
     pico_cyw43_arch_none
     )
 add_dependencies(hello_world tflitelib)
@@ -87,7 +88,7 @@ add_custom_command(
 
 add_custom_target(
     tflitelib
-    COMMAND make -f ${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/make/Makefile TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH} -j${JOBS}
+    COMMAND make -f ${TENSORFLOW_ROOT}/tensorflow/lite/micro/tools/make/Makefile TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH} -j${JOBS} microlite
     COMMENT "Compiling tensorflowlite micro library..."
     WORKING_DIRECTORY  ${TENSORFLOW_ROOT}
 )

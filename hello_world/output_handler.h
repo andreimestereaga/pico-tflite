@@ -19,6 +19,11 @@ limitations under the License.
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/tflite_bridge/micro_error_reporter.h"
 
+#define PWM1_LED_PIN 4
+#define PWM2_LED_PIN 5
+#define PWM3_LED_PIN 6
+#define PWM4_LED_PIN 7
+
 // Called by the main loop to produce some output based on the x and y values
 void HandleOutput(tflite::ErrorReporter* error_reporter, float x_value,
                   float y_value);
