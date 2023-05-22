@@ -13,8 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 #include <stdio.h>
+#ifndef TARGET_X86
 #include "pico/stdlib.h"
 #include "tusb.h"
+#endif
 #include "main_functions.h"
 
 // This is the default main used on systems that have the standard C entry
@@ -22,10 +24,12 @@ limitations under the License.
 // requirements for entry code (like an app_main function) should specialize
 // this main.cc file in a target-specific subfolder.
 int main(int argc, char* argv[]) {
+#ifndef TARGET_X86
   stdio_init_all();
   while (!tud_cdc_connected()) {
       tight_loop_contents();
   }
+#endif
   printf("Micro speech example\n");
   setup();
   
