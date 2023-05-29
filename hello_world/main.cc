@@ -29,6 +29,8 @@ limitations under the License.
 
 #endif
 
+void console_usb_handler();
+
 // This is the default main used on systems that have the standard C entry
 // point. Other devices (for example FreeRTOS or ESP32) that have different
 // requirements for entry code (like an app_main function) should specialize
@@ -81,5 +83,21 @@ int main(int argc, char* argv[]) {
     blink ^= 1;
     sleep_ms(25);
 #endif
+    console_usb_handler();
   }
+}
+
+
+void console_usb_handler()
+{
+  int16_t rc = getchar_timeout_us(10);
+
+    if (rc != PICO_ERROR_TIMEOUT)
+    {
+      //print it back to console
+      printf("%c", (char)rc);
+    }
+    else{
+      printf("USB read: error RX, timeout \n");
+    }
 }

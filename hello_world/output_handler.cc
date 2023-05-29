@@ -34,7 +34,7 @@ void HandleOutput(tflite::ErrorReporter* error_reporter, float x_value,
     iX = static_cast<int>(x_value * 100);
     iY = static_cast<int>(y_value * 1000);
     int led_offset = map(iX, 0, 596, 0,3);
-    TF_LITE_REPORT_ERROR(error_reporter, "LED: %d, x_value: %d, y_value: %d\n", led_offset, iX, iY);
+   // TF_LITE_REPORT_ERROR(error_reporter, "LED: %d, x_value: %d, y_value: %d\n", led_offset, iX, iY);
     int scale = iY + 1109;
     
     pwm_set_gpio_level(PWM1_LED_PIN + led_offset,  scale*scale);
