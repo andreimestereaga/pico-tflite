@@ -2,6 +2,7 @@
 
 ## Requirements
 The console application shall handle simple ASCII commands that are introduced by the user on keyboard.
+The maximum command length is 15, anything that exceeds this length should automatically return (CRLF) and print an error message.
 Each command have to start with '/' and it ends with 'CR' (Carriage Return, enter) as in the following examples: 
 ```
 /command1<CR>

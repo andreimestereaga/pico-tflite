@@ -10,10 +10,7 @@ void console_usb_handler()
 
     if (rc != PICO_ERROR_TIMEOUT)
     {
-    //print it back to console
-    printf("%c", (char)rc);
-    if((char)rc == 0x0D)
-        printf("%c>>", 0x0A);
+
     }
 
 }
