@@ -18,6 +18,7 @@ limitations under the License.
 #include "tusb.h"
 #endif
 #include "main_functions.h"
+#include "console_app/console_handler.h"
 
 // This is the default main used on systems that have the standard C entry
 // point. Other devices (for example FreeRTOS or ESP32) that have different
@@ -35,5 +36,9 @@ int main(int argc, char* argv[]) {
   
   while (true) {
     loop();
+    console_usb_handler();
   }
 }
+
+
+
